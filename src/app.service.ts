@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import fetch from 'node-fetch';
+import { Quiz, QuizApiResponse } from './quiz.interface';
 
 @Injectable()
 export class AppService {
@@ -7,16 +8,13 @@ export class AppService {
     return 'Hello World!';
   }
 
-  async requestData(): Promise<object> {
-    try {
-      const response = await fetch(
-        'https://opentdb.com/api.php?amount=10&type=multiple',
-      );
-      const text = await response.text();
-      const fetchText = JSON.parse(text);
-      return fetchText;
-    } catch (error) {
-      throw new Error('Failed to fetch data');
-    }
+  requestData(): Promise<QuizApiResponse> { 
+    return fetch('https://opentdb.com/api.php?amount=10&type=multiple')
+      .then((response) => response.json()) 
+      .then((data: QuizApiResponse) => {
+        console.log(data);
+        return data;
+      })
+      .catch((error) => console.log(error));
   }
 }
